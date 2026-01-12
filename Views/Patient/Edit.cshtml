@@ -1,0 +1,31 @@
+﻿@model HCAMiniEHR.Models.Patient
+
+<div class="container mt-4">
+    <h2 class="text-primary">Edit Patient</h2>
+
+    <form asp-action="Edit" method="post">
+        <input type="hidden" asp-for="PatientId" />
+
+        <div class="mb-3">
+            <label class="form-label">Full Name</label>
+            <input asp-for="FullName" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Date of Birth</label>
+            <input asp-for="DOB" type="date" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Gender</label>
+            <select asp-for="Gender" class="form-select">
+                <option>Male</option>
+                <option>Female</option>
+                <option>Other</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-success">Update</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>

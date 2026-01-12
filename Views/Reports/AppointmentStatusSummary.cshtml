@@ -1,0 +1,23 @@
+﻿@model IEnumerable<dynamic>
+
+<div class="container mt-4">
+    <h2 class="text-primary mb-3">Appointment Status Summary</h2>
+
+    <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Status</th>
+                <th>Total Appointments</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var r in Model)
+            {
+                <tr>
+                    <td>@r.Status</td>
+                    <td>@r.Count</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

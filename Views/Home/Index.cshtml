@@ -1,0 +1,112 @@
+﻿<div class="container mt-4">
+
+    <!-- PAGE TITLE -->
+    <h2 class="fw-bold text-primary mb-4">HCAMiniEHR Dashboard</h2>
+
+    <!-- MAIN MODULES -->
+    <h5 class="text-muted mb-3">Modules</h5>
+
+    <div class="row g-4 mb-5">
+
+        <div class="col-md-3">
+            <div class="card shadow-sm text-center">
+                <div class="card-body">
+                    <i class="bi bi-people-fill fs-2 text-primary"></i>
+                    <h5 class="card-title mt-2">Patients</h5>
+                    <p class="text-muted">Manage patient records</p>
+                    <a href="/Patient/Index" class="btn btn-primary btn-sm">Open</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm text-center">
+                <div class="card-body">
+                    <i class="bi bi-calendar-check fs-2 text-success"></i>
+                    <h5 class="card-title mt-2">Appointments</h5>
+                    <p class="text-muted">Schedule & update visits</p>
+                    <a href="/Appointment/Index" class="btn btn-success btn-sm">Open</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm text-center">
+                <div class="card-body">
+                    <i class="bi bi-flask fs-2 text-warning"></i>
+                    <h5 class="card-title mt-2">Lab Orders</h5>
+                    <p class="text-muted">Track diagnostics</p>
+                    <a href="/LabOrder/Index" class="btn btn-warning btn-sm">Open</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm text-center">
+                <div class="card-body">
+                    <i class="bi bi-bar-chart fs-2 text-info"></i>
+                    <h5 class="card-title mt-2">Reports</h5>
+                    <p class="text-muted">View analytics</p>
+                    <a href="/Reports/PendingLabOrders" class="btn btn-info btn-sm">Open</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ATTENTION REQUIRED -->
+    <h5 class="text-muted mb-3">Attention Required</h5>
+
+    <div class="row g-4">
+
+        <div class="col-md-4">
+            <div class="card border-warning shadow-sm">
+                <div class="card-body">
+                    <h6 class="card-title text-warning">
+                        <i class="bi bi-exclamation-triangle-fill"></i> Pending Lab Orders
+                    </h6>
+                    <p class="text-muted mb-2">
+                        Lab tests waiting to be completed
+                    </p>
+                    <a href="/Reports/PendingLabOrders" class="btn btn-outline-warning btn-sm">
+                        View Pending
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-info shadow-sm">
+                <div class="card-body">
+                    <h6 class="card-title text-info">
+                        <i class="bi bi-person-x-fill"></i> No Follow-Up
+                    </h6>
+                    <p class="text-muted mb-2">
+                        Patients without upcoming appointments
+                    </p>
+                    <a href="/Reports/PatientsWithoutFollowUp" class="btn btn-outline-info btn-sm">
+                        Review Patients
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-success shadow-sm">
+                <div class="card-body">
+                    <h6 class="card-title text-success">
+                        <i class="bi bi-calendar-event-fill"></i> Appointment Summary
+                    </h6>
+                    <p class="text-muted mb-2">
+                        View appointment status overview
+                    </p>
+                    <a href="/Reports/AppointmentStatusSummary" class="btn btn-outline-success btn-sm">
+                        View Summary
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>

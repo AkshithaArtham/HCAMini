@@ -1,0 +1,12 @@
+# Ignore Visual Studio temporary files
+.vs/
+# Ignore build directories and files
+bin/
+obj/
+# Ignore user-specific files
+*.user
+*.userosscache
+*.suo
+# Ignore configuration files
+appsettings.Development.json
+appsettings.json
