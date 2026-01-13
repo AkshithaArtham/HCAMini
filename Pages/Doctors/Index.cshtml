@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿@page
 @model HCAMiniEHR.Pages.Doctors.IndexModel
 
@@ -29,3 +30,36 @@
 
     </tbody>
 </table>
+=======
+﻿@page
+@model HCAMiniEHR.Pages.Doctors.IndexModel
+
+<h2>Doctors List</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Specialty</th>
+            <th>Gender</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var doctor in Model.Doctors)
+        {
+            <tr>
+                <td>@doctor.Name</td>
+                <td>@doctor.Specialty</td>
+                <td>@doctor.Gender</td>
+                <td>
+                    <a href="@Url.Page("Edit", new { id = doctor.DoctorId })" class="btn btn-primary">Edit</a>
+                    @* <a href="@Url.Page("Edit", new { id = doctor.DoctorId })" class="btn btn-primary">Edit</a> *@
+                    @* <a href="@Url.Page("Delete", new { id = doctor.DoctorId })" class="btn btn-danger">Delete</a> *@
+                </td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+>>>>>>> de0c1979792b9fba70a0d3608ff20cf61cb6a43b

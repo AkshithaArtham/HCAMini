@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿@page "{id:int}"
 @model HCAMiniEHR.Pages.Doctors.EditModel
 @{
@@ -46,4 +47,54 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+=======
+﻿@page "{id:int}"
+@model HCAMiniEHR.Pages.Doctors.EditModel
+@{
+    ViewData["Title"] = "Edit Doctor";
+}
+
+<h2>Edit Doctor</h2>
+
+<hr />
+
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <!-- Hidden field to ensure DoctorId is bound -->
+            <input type="hidden" asp-for="Doctor.DoctorId" />
+
+            <div class="form-group">
+                <label asp-for="Doctor.Name" class="control-label"></label>
+                <input asp-for="Doctor.Name" class="form-control" />
+                <span asp-validation-for="Doctor.Name" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Doctor.Specialty" class="control-label"></label>
+                <input asp-for="Doctor.Specialty" class="form-control" />
+                <span asp-validation-for="Doctor.Specialty" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Doctor.Gender" class="control-label"></label>
+                <input asp-for="Doctor.Gender" class="form-control" />
+                <span asp-validation-for="Doctor.Gender" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mt-3">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <a asp-page="./Index" class="btn btn-secondary ms-2">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+>>>>>>> de0c1979792b9fba70a0d3608ff20cf61cb6a43b
 }
