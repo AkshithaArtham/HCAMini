@@ -232,3 +232,4 @@ C:\HCAMiniEHR\HCAMiniEHR\HCAMiniEHR\obj\Debug\net10.0\refint\HCAMiniEHR.dll
 C:\HCAMiniEHR\HCAMiniEHR\HCAMiniEHR\obj\Debug\net10.0\HCAMiniEHR.pdb
 C:\HCAMiniEHR\HCAMiniEHR\HCAMiniEHR\obj\Debug\net10.0\HCAMiniEHR.genruntimeconfig.cache
 C:\HCAMiniEHR\HCAMiniEHR\HCAMiniEHR\obj\Debug\net10.0\ref\HCAMiniEHR.dll
+C:\HCAMiniEHR\HCAMiniEHR\HCAMiniEHR\obj\Debug\net10.0\HCAMiniEHR.sourcelink.json
