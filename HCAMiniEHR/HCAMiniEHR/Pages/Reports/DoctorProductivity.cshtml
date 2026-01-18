@@ -1,0 +1,168 @@
+﻿@page
+@model HCAMiniEHR.Pages.Reports.DoctorProductivityModel
+@{
+    ViewData["Title"] = "Doctor Productivity Report";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Doctor Productivity Report</h1>
+        <a asp-page="Index" class="btn btn-secondary">Back to Reports</a>
+    </div>
+
+    <!-- Report Period Selector -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Report Period</h5>
+        </div>
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Report Period (Days)</label>
+                    <div class="btn-group" role="group">
+                        <a asp-page="DoctorProductivity" asp-route-days="7" class="btn @(HttpContext.Request.Query["days"] == "7" ? "btn-primary" : "btn-outline-primary")">7 Days</a>
+                        <a asp-page="DoctorProductivity" asp-route-days="30" class="btn @(HttpContext.Request.Query["days"] == "30" || string.IsNullOrEmpty(HttpContext.Request.Query["days"]) ? "btn-primary" : "btn-outline-primary")">30 Days</a>
+                        <a asp-page="DoctorProductivity" asp-route-days="90" class="btn @(HttpContext.Request.Query["days"] == "90" ? "btn-primary" : "btn-outline-primary")">90 Days</a>
+                        <a asp-page="DoctorProductivity" asp-route-days="180" class="btn @(HttpContext.Request.Query["days"] == "180" ? "btn-primary" : "btn-outline-primary")">180 Days</a>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mt-3">
+                        <strong>Period:</strong> @Model.ReportStartDate.ToString("yyyy-MM-dd") to @Model.ReportEndDate.ToString("yyyy-MM-dd")
+                        <br>
+                        <strong>Total Doctors:</strong> @Model.Doctors.Count
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            @if (Model.Doctors.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-primary">
+                            <tr>
+                                <th>Doctor</th>
+                                <th>Specialty</th>
+                                <th>Total Appointments</th>
+                                <th>Completed</th>
+                                <th>Cancelled</th>
+                                <th>Completion Rate</th>
+                                <th>Last Appointment</th>
+                                <th>Performance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var doctor in Model.Doctors)
+                            {
+                                <tr>
+                                    <td>
+                                        <strong>@doctor.DoctorName</strong>
+                                        <small class="text-muted d-block">ID: @doctor.DoctorId</small>
+                                    </td>
+                                    <td>@doctor.Specialty</td>
+                                    <td>@doctor.TotalAppointments</td>
+                                    <td>
+                                        <span class="badge bg-success">@doctor.CompletedAppointments</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-warning">@doctor.CancelledAppointments</span>
+                                    </td>
+                                    <td>
+                                        <div class="progress" style="height: 20px;">
+                                            <div class="progress-bar
+                                                        @(doctor.CompletionRate >= 80 ? "bg-success" :
+                                                                                                   doctor.CompletionRate >= 60 ? "bg-info" :
+                                                                                                   doctor.CompletionRate >= 40 ? "bg-warning" : "bg-danger")"
+                                                 role="progressbar"
+                                                 style="width: @doctor.CompletionRate%"
+                                                 aria-valuenow="@doctor.CompletionRate"
+                                                 aria-valuemin="0"
+                                                 aria-valuemax="100">
+                                                @doctor.CompletionRate%
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        @if (doctor.LastAppointmentDate.HasValue)
+                                        {
+                                            @doctor.LastAppointmentDate.Value.ToString("yyyy-MM-dd")
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">No appointments</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (doctor.CompletionRate >= 80)
+                                        {
+                                            <span class="badge bg-success">Excellent</span>
+                                        }
+                                        else if (doctor.CompletionRate >= 60)
+                                        {
+                                            <span class="badge bg-info">Good</span>
+                                        }
+                                        else if (doctor.CompletionRate >= 40)
+                                        {
+                                            <span class="badge bg-warning">Average</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger">Needs Improvement</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Summary Statistics -->
+                <div class="row mt-4">
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h5 class="card-title">@Model.Doctors.Count</h5>
+                                <p class="card-text">Doctors Active</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h5 class="card-title">@Model.Doctors.Sum(d => d.TotalAppointments)</h5>
+                                <p class="card-text">Total Appointments</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h5 class="card-title">@Math.Round(Model.Doctors.Average(d => d.CompletionRate), 1)%</h5>
+                                <p class="card-text">Avg Completion Rate</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h5 class="card-title">@Model.Doctors.Sum(d => d.CancelledAppointments)</h5>
+                                <p class="card-text">Total Cancelled</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info">
+                    <h5>No Data Available</h5>
+                    <p>No doctor appointments found for the selected period (@Model.ReportStartDate.ToString("yyyy-MM-dd") to @Model.ReportEndDate.ToString("yyyy-MM-dd")).</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>

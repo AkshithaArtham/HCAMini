@@ -1,0 +1,47 @@
+﻿@page
+@model HCAMiniEHR.Pages.Patients.IndexModel
+
+<h2>Patients</h2>
+
+<p>
+    <a asp-page="Create" class="btn btn-success">+ Create New Patient</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Gender</th>
+            <th>Date of Birth</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Patients.Any())
+        {
+            @foreach (var patient in Model.Patients)
+            {
+                <tr>
+                    <td>@patient.PatientId</td>
+                    <td>@patient.Name</td>
+                    <td>@patient.Gender</td>
+                    <td>@patient.DateOfBirth.ToString("yyyy-MM-dd")</td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <a asp-page="./Details" asp-route-id="@patient.PatientId" class="btn btn-info btn-sm">Details</a>
+                            <a asp-page="./Edit" asp-route-id="@patient.PatientId" class="btn btn-warning btn-sm">Edit</a>
+                            <a asp-page="./Delete" asp-route-id="@patient.PatientId" class="btn btn-danger btn-sm">Delete</a>
+                        </div>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="5" class="text-center">No patients found</td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,152 @@
+﻿@page "{id?}"
+@model HCAMiniEHR.Pages.Appointments.DetailsModel
+@{
+    ViewData["Title"] = "Appointment Details";
+}
+
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h2>Appointment Details</h2>
+                </div>
+                <div class="card-body">
+                    @if (Model.Appointment == null)
+                    {
+                        <div class="alert alert-danger">
+                            Appointment not found.
+                        </div>
+                        <a asp-page="./Index" class="btn btn-secondary">Back to List</a>
+                    }
+                    else
+                    {
+                        <dl class="row">
+                            <dt class="col-sm-4">Appointment ID</dt>
+                            <dd class="col-sm-8">@Model.Appointment.AppointmentId</dd>
+
+                            <dt class="col-sm-4">Patient</dt>
+                            <dd class="col-sm-8">
+                                @Model.Appointment.Patient?.Name
+                                <small class="text-muted">(ID: @Model.Appointment.PatientId)</small>
+                            </dd>
+
+                            <dt class="col-sm-4">Doctor</dt>
+                            <dd class="col-sm-8">
+                                @Model.Appointment.Doctor?.Name
+                                <small class="text-muted">(ID: @Model.Appointment.DoctorId)</small>
+                            </dd>
+
+                            <dt class="col-sm-4">Appointment Date & Time</dt>
+                            <dd class="col-sm-8">@Model.Appointment.AppointmentDateTime.ToString("yyyy-MM-dd HH:mm")</dd>
+
+                            <dt class="col-sm-4">Reason</dt>
+                            <dd class="col-sm-8">@Model.Appointment.Reason</dd>
+
+                            <dt class="col-sm-4">Notes</dt>
+                            <dd class="col-sm-8">
+                                @if (string.IsNullOrEmpty(Model.Appointment.Notes))
+                                {
+                                    <span class="text-muted">No notes provided</span>
+                                }
+                                else
+                                {
+                                    @Model.Appointment.Notes
+                                }
+                        </dd>
+
+                        <dt class="col-sm-4">Status</dt>
+                        <dd class="col-sm-8">
+                            <span class="badge
+                                    @(Model.Appointment.Status == "Scheduled" ? "bg-primary" :
+                                                                        Model.Appointment.Status == "Completed" ? "bg-success" :
+                                                                        "bg-secondary")">
+                                    @Model.Appointment.Status
+                                </span>
+                            </dd>
+
+                            <dt class="col-sm-4">Created Date</dt>
+                            <dd class="col-sm-8">@Model.Appointment.CreatedDate.ToString("yyyy-MM-dd HH:mm")</dd>
+                        </dl>
+
+                        <div class="mt-4">
+                            <a asp-page="./Edit" asp-route-id="@Model.Appointment.AppointmentId" class="btn btn-primary">Edit</a>
+                            <a asp-page="./Index" class="btn btn-secondary">Back to List</a>
+
+                            @if (Model.Appointment.Status == "Scheduled")
+                            {
+                                <form method="post" asp-page-handler="Complete" asp-route-id="@Model.Appointment.AppointmentId" class="d-inline">
+                                    <button type="submit" class="btn btn-success">Mark as Completed</button>
+                                </form>
+                                <form method="post" asp-page-handler="Cancel" asp-route-id="@Model.Appointment.AppointmentId" class="d-inline">
+                                    <button type="submit" class="btn btn-warning">Cancel Appointment</button>
+                                </form>
+                            }
+                        </div>
+
+                        <!-- Audit Logs Section -->
+                        @if (Model.AuditLogs.Any())
+                        {
+                            <div class="mt-5 border-top pt-4">
+                                <h4>Audit History</h4>
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Action</th>
+                                                <th>Changed At</th>
+                                                <th>Changed By</th>
+                                                <th>Details</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var log in Model.AuditLogs)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        <span class="badge
+                                                                        @(log.Action == "INSERT" ? "bg-success" :
+                                                                                                                            log.Action == "UPDATE" ? "bg-warning" : "bg-danger")">
+                                                            @log.Action
+                                                        </span>
+                                                    </td>
+                                                    <td>@log.ChangedAt.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                                                    <td>@log.ChangedBy</td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-info"
+                                                                type="button"
+                                                                data-bs-toggle="collapse"
+                                                                data-bs-target="#audit-@log.AuditLogId">
+                                                            View Details
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                <tr class="collapse" id="audit-@log.AuditLogId">
+                                                    <td colspan="4">
+                                                        <div class="card card-body">
+                                                            @if (!string.IsNullOrEmpty(log.OldValues))
+                                                            {
+                                                                <h6>Old Values:</h6>
+                                                                <pre class="bg-light p-2 small">@log.OldValues</pre>
+                                                            }
+                                                            @if (!string.IsNullOrEmpty(log.NewValues))
+                                                            {
+                                                                <h6>New Values:</h6>
+                                                                <pre class="bg-light p-2 small">@log.NewValues</pre>
+                                                            }
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

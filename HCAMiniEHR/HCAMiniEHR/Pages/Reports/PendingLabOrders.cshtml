@@ -1,0 +1,78 @@
+﻿@page
+@model HCAMiniEHR.Pages.Reports.PendingLabOrdersModel
+@{
+    ViewData["Title"] = "Pending Lab Orders Report";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Pending Lab Orders Report</h1>
+        <a asp-page="Index" class="btn btn-secondary">Back to Reports</a>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header bg-warning text-white">
+            <h5 class="mb-0">Summary</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <strong>Total Pending Orders:</strong> @Model.TotalPendingOrders
+                </div>
+                <div class="col-md-6">
+                    <strong>Report Date:</strong> @DateTime.Now.ToString("yyyy-MM-dd HH:mm")
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            @if (Model.PendingLabOrders.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-warning">
+                            <tr>
+                                <th>Lab Order ID</th>
+                                <th>Patient Name</th>
+                                <th>Test Name</th>
+                                <th>Order Date</th>
+                                <th>Days Pending</th>
+                                <th>Notes</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var order in Model.PendingLabOrders)
+                            {
+                                <tr>
+                                    <td>@order.LabOrderId</td>
+                                    <td>@order.PatientName</td>
+                                    <td>@order.TestName</td>
+                                    <td>@order.OrderDate.ToString("yyyy-MM-dd")</td>
+                                    <td>
+                                        <span class="badge @(order.DaysPending > 7 ? "bg-danger" : "bg-warning")">
+                                            @order.DaysPending day(s)
+                                        </span>
+                                    </td>
+                                    <td>@(string.IsNullOrEmpty(order.Notes) ? "No notes" : order.Notes)</td>
+                                    <td>
+                                        <a href="/LabOrders/Details?id=@order.LabOrderId" class="btn btn-info btn-sm">View Details</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-success">
+                    <h5>Great News!</h5>
+                    <p>There are no pending lab orders. All lab orders have been processed.</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>

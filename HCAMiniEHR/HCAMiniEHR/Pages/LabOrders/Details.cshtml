@@ -1,0 +1,176 @@
+﻿@page
+@model HCAMiniEHR.Pages.LabOrders.DetailsModel
+@{
+    ViewData["Title"] = "Lab Order Details";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h2>Lab Order Details</h2>
+                </div>
+                <div class="card-body">
+                    @if (Model.LabOrder == null)
+                    {
+                        <div class="alert alert-danger">
+                            Lab order not found.
+                        </div>
+                        <a asp-page="Index" class="btn btn-secondary">Back to List</a>
+                    }
+                    else
+                    {
+                        <dl class="row">
+                            <dt class="col-sm-4">Lab Order ID</dt>
+                            <dd class="col-sm-8">@Model.LabOrder.LabOrderId</dd>
+
+                            <dt class="col-sm-4">Patient</dt>
+                            <dd class="col-sm-8">
+                                @Model.LabOrder.PatientName
+                                <small class="text-muted">(ID: @Model.LabOrder.PatientId)</small>
+                            </dd>
+
+                            <dt class="col-sm-4">Appointment</dt>
+                            <dd class="col-sm-8">
+                                @if (Model.LabOrder.AppointmentId.HasValue)
+                                {
+                                    <div>Appointment ID: @Model.LabOrder.AppointmentId</div>
+                                    @if (Model.LabOrder.AppointmentDate.HasValue)
+                                    {
+                                        <div>Date: @Model.LabOrder.AppointmentDate.Value.ToString("yyyy-MM-dd HH:mm")</div>
+                                    }
+                                    @if (!string.IsNullOrEmpty(Model.LabOrder.DoctorName))
+                                    {
+                                        <div>Doctor: @Model.LabOrder.DoctorName</div>
+                                    }
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Not associated with an appointment</span>
+                                }
+                        </dd>
+
+                        <dt class="col-sm-4">Test Name</dt>
+                        <dd class="col-sm-8">@Model.LabOrder.TestName</dd>
+
+                        <dt class="col-sm-4">Status</dt>
+                        <dd class="col-sm-8">
+                            <span class="badge
+                                    @(Model.LabOrder.Status == "Pending" ? "bg-warning" :
+                                                                        Model.LabOrder.Status == "InProgress" ? "bg-primary" :
+                                                                        Model.LabOrder.Status == "Completed" ? "bg-success" :
+                                                                        "bg-secondary")">
+                                    @Model.LabOrder.Status
+                                </span>
+                            </dd>
+
+                            <dt class="col-sm-4">Order Date</dt>
+                            <dd class="col-sm-8">@Model.LabOrder.OrderDate?.ToString("yyyy-MM-dd HH:mm")</dd>
+
+                            <dt class="col-sm-4">Result Date</dt>
+                            <dd class="col-sm-8">
+                                @if (Model.LabOrder.ResultDate.HasValue)
+                                {
+                                    @Model.LabOrder.ResultDate.Value.ToString("yyyy-MM-dd HH:mm")
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Pending</span>
+                                }
+                            </dd>
+
+                            <dt class="col-sm-4">Notes</dt>
+                            <dd class="col-sm-8">
+                                @if (string.IsNullOrEmpty(Model.LabOrder.Notes))
+                                {
+                                    <span class="text-muted">No notes provided</span>
+                                }
+                                else
+                                {
+                                    @Model.LabOrder.Notes
+                                }
+                            </dd>
+
+                            <dt class="col-sm-4">Result Notes</dt>
+                            <dd class="col-sm-8">
+                                @if (string.IsNullOrEmpty(Model.LabOrder.ResultNotes))
+                                {
+                                    <span class="text-muted">No result notes</span>
+                                }
+                                else
+                                {
+                                    @Model.LabOrder.ResultNotes
+                                }
+                            </dd>
+                        </dl>
+
+                        <div class="mt-4">
+                            <a asp-page="Index" class="btn btn-secondary">Back to List</a>
+                        </div>
+
+                        <!-- Audit Logs Section -->
+                        @if (Model.AuditLogs.Any())
+                        {
+                            <div class="mt-5 border-top pt-4">
+                                <h4>Audit History</h4>
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Action</th>
+                                                <th>Changed At</th>
+                                                <th>Changed By</th>
+                                                <th>Details</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var log in Model.AuditLogs)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        <span class="badge
+                                                                        @(log.Action == "INSERT" ? "bg-success" :
+                                                                                                                            log.Action == "UPDATE" ? "bg-warning" : "bg-danger")">
+                                                            @log.Action
+                                                        </span>
+                                                    </td>
+                                                    <td>@log.ChangedAt.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                                                    <td>@log.ChangedBy</td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-info"
+                                                                type="button"
+                                                                data-bs-toggle="collapse"
+                                                                data-bs-target="#audit-@log.AuditLogId">
+                                                            View Details
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                <tr class="collapse" id="audit-@log.AuditLogId">
+                                                    <td colspan="4">
+                                                        <div class="card card-body">
+                                                            @if (!string.IsNullOrEmpty(log.OldValues))
+                                                            {
+                                                                <h6>Old Values:</h6>
+                                                                <pre class="bg-light p-2 small">@log.OldValues</pre>
+                                                            }
+                                                            @if (!string.IsNullOrEmpty(log.NewValues))
+                                                            {
+                                                                <h6>New Values:</h6>
+                                                                <pre class="bg-light p-2 small">@log.NewValues</pre>
+                                                            }
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

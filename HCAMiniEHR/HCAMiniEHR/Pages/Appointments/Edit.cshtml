@@ -1,0 +1,143 @@
+﻿@page "{id:int}"
+@model HCAMiniEHR.Pages.Appointments.EditModel
+@{
+    ViewData["Title"] = "Edit Appointment";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Edit Appointment</h2>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        @Html.AntiForgeryToken()
+
+                        <input type="hidden" asp-for="Appointment.AppointmentId" />
+                        <input type="hidden" asp-for="Appointment.CreatedDate" />
+
+                        @if (!ViewData.ModelState.IsValid && ViewData.ModelState.ErrorCount > 0)
+                        {
+                            <div class="alert alert-danger">
+                                <h5>Please fix the following errors:</h5>
+                                <ul>
+                                    @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                                    {
+                                        <li>@error.ErrorMessage</li>
+                                    }
+                                </ul>
+                            </div>
+                        }
+
+                        <div class="form-group mb-3">
+                            <label class="control-label">Patient</label>
+                            <select name="SelectedPatientId" class="form-control" required>
+                                <option value="">-- Select Patient --</option>
+                                @foreach (var item in Model.Patients)
+                                {
+                                    <option value="@item.Value" selected="@(item.Value == Model.Appointment.PatientId.ToString())">
+                                        @item.Text
+                                    </option>
+                                }
+                            </select>
+                            @if (ViewData.ModelState["SelectedPatientId"]?.Errors?.Count > 0)
+                            {
+                                <span class="text-danger">@ViewData.ModelState["SelectedPatientId"].Errors[0].ErrorMessage</span>
+                            }
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label class="control-label">Doctor</label>
+                            <select name="SelectedDoctorId" class="form-control" required>
+                                <option value="">-- Select Doctor --</option>
+                                @foreach (var item in Model.Doctors)
+                                {
+                                    <option value="@item.Value" selected="@(item.Value == Model.Appointment.DoctorId.ToString())">
+                                        @item.Text
+                                    </option>
+                                }
+                            </select>
+                            @if (ViewData.ModelState["SelectedDoctorId"]?.Errors?.Count > 0)
+                            {
+                                <span class="text-danger">@ViewData.ModelState["SelectedDoctorId"].Errors[0].ErrorMessage</span>
+                            }
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label class="control-label">Appointment Date & Time *</label>
+                            <input type="datetime-local"
+                                   name="Appointment.AppointmentDateTime"
+                                   id="Appointment_AppointmentDateTime"
+                                   class="form-control"
+                                   value="@Model.Appointment.AppointmentDateTime.ToString("yyyy-MM-ddTHH:mm")"
+                                   required />
+                            @if (ViewData.ModelState["Appointment.AppointmentDateTime"]?.Errors?.Count > 0)
+                            {
+                                <span class="text-danger">@ViewData.ModelState["Appointment.AppointmentDateTime"].Errors[0].ErrorMessage</span>
+                            }
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label class="control-label">Reason for Appointment *</label>
+                            <input type="text"
+                                   name="Appointment.Reason"
+                                   id="Appointment_Reason"
+                                   class="form-control"
+                                   value="@Model.Appointment.Reason"
+                                   required />
+                            @if (ViewData.ModelState["Appointment.Reason"]?.Errors?.Count > 0)
+                            {
+                                <span class="text-danger">@ViewData.ModelState["Appointment.Reason"].Errors[0].ErrorMessage</span>
+                            }
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label class="control-label">Status</label>
+                            <select name="Appointment.Status" class="form-control" required>
+                                <option value="Scheduled" selected="@(Model.Appointment.Status == "Scheduled")">Scheduled</option>
+                                <option value="Completed" selected="@(Model.Appointment.Status == "Completed")">Completed</option>
+                                <option value="Cancelled" selected="@(Model.Appointment.Status == "Cancelled")">Cancelled</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label class="control-label">Additional Notes (Optional)</label>
+                            <textarea name="Appointment.Notes"
+                                      id="Appointment_Notes"
+                                      class="form-control"
+                                      rows="3">@Model.Appointment.Notes</textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                            <a asp-page="./Details" asp-route-id="@Model.Appointment.AppointmentId" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Set date restrictions
+        const dateInput = document.getElementById('Appointment_AppointmentDateTime');
+        if (dateInput) {
+            const now = new Date();
+            const oneMonthLater = new Date();
+            oneMonthLater.setMonth(now.getMonth() + 1);
+
+            const formatDate = (date) => {
+                const pad = (num) => num.toString().padStart(2, '0');
+                return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+            };
+
+            // Only set min date (can't book in past)
+            dateInput.min = formatDate(now);
+            console.log('Date restrictions set. Min date:', dateInput.min);
+        }
+    });
+</script>

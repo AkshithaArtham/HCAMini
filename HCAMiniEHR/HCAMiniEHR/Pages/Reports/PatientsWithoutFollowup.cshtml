@@ -1,0 +1,99 @@
+﻿@page
+@model HCAMiniEHR.Pages.Reports.PatientsWithoutFollowupModel
+@{
+    ViewData["Title"] = "Patients Without Follow-up Report";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Patients Without Follow-up Report</h1>
+        <a asp-page="Index" class="btn btn-secondary">Back to Reports</a>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header bg-info text-white">
+            <h5 class="mb-0">Summary</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <strong>Total Patients:</strong> @Model.TotalPatients
+                </div>
+                <div class="col-md-4">
+                    <strong>Report Date:</strong> @DateTime.Now.ToString("yyyy-MM-dd HH:mm")
+                </div>
+                <div class="col-md-4">
+                    <strong>Follow-up Needed:</strong> Patients with no future appointments scheduled
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            @if (Model.Patients.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-info">
+                            <tr>
+                                <th>Patient ID</th>
+                                <th>Patient Name</th>
+                                <th>Last Appointment</th>
+                                <th>Days Since Last Visit</th>
+                                <th>Last Visit Reason</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var patient in Model.Patients)
+                            {
+                                <tr>
+                                    <td>@patient.PatientId</td>
+                                    <td>@patient.PatientName</td>
+                                    
+                                    <td>
+                                        @if (patient.LastAppointmentDate.HasValue)
+                                        {
+                                            @patient.LastAppointmentDate.Value.ToString("yyyy-MM-dd")
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">Never</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (patient.LastAppointmentDate.HasValue)
+                                        {
+                                            <span class="badge @(patient.DaysSinceLastAppointment > 90 ? "bg-danger" :
+                                                                                                                 patient.DaysSinceLastAppointment > 60 ? "bg-warning" : "bg-success")">
+                                                @patient.DaysSinceLastAppointment day(s)
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">No visits</span>
+                                        }
+                                    </td>
+                                    <td>@(string.IsNullOrEmpty(patient.LastAppointmentReason) ? "N/A" : patient.LastAppointmentReason)</td>
+                                    <td>
+                                        <a href="/Patients" class="btn btn-info btn-sm">View Patients</a>
+                                        @* <a href="/Patients/Details?id=@patient.PatientId" class="btn btn-info btn-sm">View Patient</a> *@
+                                        <a href="/Appointments/Create?patientId=@patient.PatientId" class="btn btn-success btn-sm">Schedule Follow-up</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-success">
+                    <h5>Great News!</h5>
+                    <p>All patients have follow-up appointments scheduled.</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>

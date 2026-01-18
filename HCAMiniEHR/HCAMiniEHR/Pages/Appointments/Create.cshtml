@@ -1,0 +1,175 @@
+﻿@page
+@model HCAMiniEHR.Pages.Appointments.CreateModel
+@{
+    ViewData["Title"] = "Create Appointment";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Create New Appointment</h2>
+                </div>
+                <div class="card-body">
+                    <form method="post" id="createForm">
+                        @Html.AntiForgeryToken()
+
+                        @if (!ViewData.ModelState.IsValid && ViewData.ModelState.ErrorCount > 0)
+                        {
+                            <div class="alert alert-danger">
+                                <h5>Please fix the following errors:</h5>
+                                <ul>
+                                    @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                                    {
+                                        <li>@error.ErrorMessage</li>
+                                    }
+                                </ul>
+                            </div>
+                        }
+
+                        <div class="form-group mb-3">
+                            <label for="SelectedPatientId" class="control-label">Patient *</label>
+                            <select name="SelectedPatientId" id="SelectedPatientId" class="form-control" required>
+                                <option value="">-- Select Patient --</option>
+                                @foreach (var item in Model.Patients)
+                                {
+                                    <option value="@item.Value">@item.Text</option>
+                                }
+                            </select>
+                            @if (ViewData.ModelState["SelectedPatientId"]?.Errors?.Count > 0)
+                            {
+                                <span class="text-danger">@ViewData.ModelState["SelectedPatientId"].Errors[0].ErrorMessage</span>
+                            }
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="SelectedDoctorId" class="control-label">Doctor *</label>
+                            <select name="SelectedDoctorId" id="SelectedDoctorId" class="form-control" required>
+                                <option value="">-- Select Doctor --</option>
+                                @foreach (var item in Model.Doctors)
+                                {
+                                    <option value="@item.Value">@item.Text</option>
+                                }
+                            </select>
+                            @if (ViewData.ModelState["SelectedDoctorId"]?.Errors?.Count > 0)
+                            {
+                                <span class="text-danger">@ViewData.ModelState["SelectedDoctorId"].Errors[0].ErrorMessage</span>
+                            }
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="Appointment_AppointmentDateTime" class="control-label">Appointment Date & Time *</label>
+                            <input type="datetime-local"
+                                   name="Appointment.AppointmentDateTime"
+                                   id="Appointment_AppointmentDateTime"
+                                   class="form-control"
+                                   required />
+                            @if (ViewData.ModelState["Appointment.AppointmentDateTime"]?.Errors?.Count > 0)
+                            {
+                                <span class="text-danger">@ViewData.ModelState["Appointment.AppointmentDateTime"].Errors[0].ErrorMessage</span>
+                            }
+                            <small class="text-muted">Appointments can only be booked within one month from today.</small>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="Appointment_Reason" class="control-label">Reason for Appointment *</label>
+                            <input type="text"
+                                   name="Appointment.Reason"
+                                   id="Appointment_Reason"
+                                   class="form-control"
+                                   required />
+                            @if (ViewData.ModelState["Appointment.Reason"]?.Errors?.Count > 0)
+                            {
+                                <span class="text-danger">@ViewData.ModelState["Appointment.Reason"].Errors[0].ErrorMessage</span>
+                            }
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="Appointment_Notes" class="control-label">Additional Notes (Optional)</label>
+                            <textarea name="Appointment.Notes"
+                                      id="Appointment_Notes"
+                                      class="form-control"
+                                      rows="3"></textarea>
+                            @if (ViewData.ModelState["Appointment.Notes"]?.Errors?.Count > 0)
+                            {
+                                <span class="text-danger">@ViewData.ModelState["Appointment.Notes"].Errors[0].ErrorMessage</span>
+                            }
+                        </div>
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">Create Appointment</button>
+                            <a asp-page="Index" class="btn btn-secondary">Back to List</a>
+                        </div>
+                    </form>
+
+                    <!-- Debug output -->
+                    @if (Request.Method == "POST")
+                    {
+                        <div class="alert alert-info mt-3">
+                            <h5>Form Submission Debug:</h5>
+                            <p>SelectedPatientId: <strong>@Request.Form["SelectedPatientId"]</strong></p>
+                            <p>SelectedDoctorId: <strong>@Request.Form["SelectedDoctorId"]</strong></p>
+                            <p>AppointmentDateTime: <strong>@Request.Form["Appointment.AppointmentDateTime"]</strong></p>
+                            <p>Reason: <strong>@Request.Form["Appointment.Reason"]</strong></p>
+                            <p>Notes: <strong>@Request.Form["Appointment.Notes"]</strong></p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Create Appointment page loaded');
+
+        // Set date restrictions
+        const dateInput = document.getElementById('Appointment_AppointmentDateTime');
+        if (dateInput) {
+            const now = new Date();
+            const oneMonthLater = new Date();
+            oneMonthLater.setMonth(now.getMonth() + 1);
+
+            const formatDate = (date) => {
+                const pad = (num) => num.toString().padStart(2, '0');
+                return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+            };
+
+            dateInput.min = formatDate(now);
+            dateInput.max = formatDate(oneMonthLater);
+            console.log('Date restrictions set:', dateInput.min, 'to', dateInput.max);
+        }
+
+        // Debug form submission
+        const form = document.getElementById('createForm');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                console.log('=== FORM SUBMISSION START ===');
+                console.log('SelectedPatientId:', document.getElementById('SelectedPatientId').value);
+                console.log('SelectedDoctorId:', document.getElementById('SelectedDoctorId').value);
+                console.log('AppointmentDateTime:', document.getElementById('Appointment_AppointmentDateTime').value);
+                console.log('Reason:', document.getElementById('Appointment_Reason').value);
+                console.log('Notes:', document.getElementById('Appointment_Notes').value);
+                console.log('=== FORM SUBMISSION END ===');
+
+                // Validate required fields
+                const patientId = document.getElementById('SelectedPatientId').value;
+                const doctorId = document.getElementById('SelectedDoctorId').value;
+                const dateTime = document.getElementById('Appointment_AppointmentDateTime').value;
+                const reason = document.getElementById('Appointment_Reason').value;
+
+                if (!patientId || !doctorId || !dateTime || !reason) {
+                    console.log('Validation failed: Missing required fields');
+                    alert('Please fill all required fields (*)');
+                    e.preventDefault();
+                    return false;
+                }
+
+                console.log('Form validation passed');
+                return true;
+            });
+        }
+    });
+</script>

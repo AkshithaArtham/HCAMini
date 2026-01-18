@@ -1,0 +1,71 @@
+﻿@page
+@model HCAMiniEHR.Pages.LabOrders.CreateModel
+@{
+    ViewData["Title"] = "Create Lab Order";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Create New Lab Order</h2>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        @Html.AntiForgeryToken()
+
+                        @if (!ViewData.ModelState.IsValid)
+                        {
+                            <div class="alert alert-danger">
+                                <h5>Please fix the following errors:</h5>
+                                <ul>
+                                    @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                                    {
+                                        <li>@error.ErrorMessage</li>
+                                    }
+                                </ul>
+                            </div>
+                        }
+
+                        <div class="form-group mb-3">
+                            <label asp-for="LabOrderDTO.PatientId" class="control-label">Patient *</label>
+                            <select asp-for="LabOrderDTO.PatientId" class="form-control" asp-items="Model.Patients" required>
+                                <option value="">-- Select Patient --</option>
+                            </select>
+                            <span asp-validation-for="LabOrderDTO.PatientId" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="LabOrderDTO.AppointmentId" class="control-label">Appointment (Optional)</label>
+                            <select asp-for="LabOrderDTO.AppointmentId" class="form-control" asp-items="Model.Appointments">
+                                <option value="">-- Select Appointment (Optional) --</option>
+                            </select>
+                            <small class="text-muted">Leave empty if not associated with an appointment</small>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="LabOrderDTO.TestName" class="control-label">Test Name *</label>
+                            <input asp-for="LabOrderDTO.TestName" class="form-control" required />
+                            <span asp-validation-for="LabOrderDTO.TestName" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="LabOrderDTO.Notes" class="control-label">Notes (Optional)</label>
+                            <textarea asp-for="LabOrderDTO.Notes" class="form-control" rows="3"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">Create Lab Order</button>
+                            <a asp-page="Index" class="btn btn-secondary">Back to List</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

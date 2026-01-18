@@ -1,0 +1,41 @@
+﻿@page
+@model HCAMiniEHR.Pages.Reports.IndexModel
+@{
+    ViewData["Title"] = "Reports";
+}
+
+<div class="container mt-4">
+    <h1>Healthcare Reports</h1>
+
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Pending Lab Orders</h5>
+                    <p class="card-text">View all lab orders with status 'Pending'</p>
+                    <a asp-page="PendingLabOrders" class="btn btn-primary">View Report</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Patients Without Follow-up</h5>
+                    <p class="card-text">Patients with no future appointments scheduled</p>
+                    <a asp-page="PatientsWithoutFollowup" class="btn btn-primary">View Report</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Doctor Productivity</h5>
+                    <p class="card-text">Doctor appointment statistics and completion rates</p>
+                    <a asp-page="DoctorProductivity" class="btn btn-primary">View Report</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
