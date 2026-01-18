@@ -1,5 +1,5 @@
-<<<<<<< HEAD
-﻿@page
+﻿
+@page
 @model HCAMiniEHR.Pages.Doctors.CreateModel
 
 <h2>Add Doctor</h2>
@@ -22,28 +22,3 @@
 </form>
 </form>
 
-=======
-﻿@page
-@model HCAMiniEHR.Pages.Doctors.CreateModel
-
-<h2>Add Doctor</h2>
-<form method="post">
-    <div asp-validation-summary="All" class="text-danger"></div>
-<form method="post">
-    <div class="form-group">
-        <label>Name</label>
-        <input class="form-control" asp-for="Doctor.Name" />
-    </div>
-    <div class="form-group">
-        <label>Specialty</label>
-        <input class="form-control" asp-for="Doctor.Specialty" />
-    </div>
-    <div class="form-group">
-        <label>Gender</label>
-        <input class="form-control" asp-for="Doctor.Gender" />
-    </div>
-    <button type="submit" class="btn btn-primary">Add</button>
-</form>
-</form>
-
->>>>>>> de0c1979792b9fba70a0d3608ff20cf61cb6a43b
